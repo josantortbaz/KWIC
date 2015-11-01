@@ -45,5 +45,6 @@ Temporary Items
 # Compilados de Java
 .build
 .nbproject
-*.class
-*.jar
+/nbproject/private/
+/build/
+/dist/

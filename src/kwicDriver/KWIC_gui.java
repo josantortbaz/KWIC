@@ -5,6 +5,7 @@ package kwicDriver;
 
 import vistas.VistaKWIC;
 import java.util.ArrayList;
+import java.util.Locale;
 /**
  *
  * @author Jortizbazaga
@@ -12,9 +13,6 @@ import java.util.ArrayList;
 public class KWIC_gui {
     
     public static void main(String[] args) {
-        ArrayList<String> listaIdiomas = new ArrayList<String>();
-        listaIdiomas.add("Español");
-        listaIdiomas.add("Inglés");
-        VistaKWIC vista = new VistaKWIC(listaIdiomas);
+        VistaKWIC vista = new VistaKWIC();
     }
 }

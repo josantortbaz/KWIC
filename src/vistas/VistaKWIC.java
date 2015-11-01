@@ -3,38 +3,49 @@
  */
 package vistas;
 
+import controladores.ControladorKWIC;
+import controladores.ControladorNS;
+import controladores.MainControlador;
 import java.awt.*;
 import javax.swing.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  *
  * @author Jortizbazaga
  */
-public class VistaKWIC {
+public class VistaKWIC extends JFrame {
     
     // Texto para mostrar en los labels:
-    public final String TXT_LABEL_INSERTADO = "Títulos";
-    public final String TXT_LABEL_CALCULADO = "Calculado";
-    public final String TXT_LABEL_NS = "No significativas";
+    private String txtLabelInsertado,
+            txtLabelCalculado, 
+            txtLabelNS;
 
     // Texto que mostrarán los botones:
-    public final String TXT_BTN_KWIC = "KWIC";
-    public final String TXT_BTN_INSERTAR_NS = "Insertar";
+    private String txtBtnKWIC,
+            txtBtnNS;
 
     // Texto por defecto en los JTextAreas:
-    public final String TXT_DEFECTO_KWIC = "Inserte títulos....";
-    public final String TXT_DEFECTO_NS = "Inserte palabras no significativas";
+    private String txtDefectoKWIC,
+            txtDefectoNS;
     
     // Texto para mostrar en los tabs:
-    public final String TXT_LAB_KWIC = "KWIC";
-    public final String TXT_LAB_NS = "No significativas";
-
+    private String txtLabKWIC,
+            txtLabNS;
     
+    // Título de la ventana:
+    private String tituloVentana;
+
+    // INTERNACIONALIZACIÓN:
+    private List<String> idiomas;
+    
+    // ELEMENTOS VISUALES:
     private JMenuBar menu;      // Menú para la ventana.
-    private JComboBox idiomas;  // Combo para seleccionar el idioma.
+    private JComboBox comboIdiomas;  // Combo para seleccionar el idioma.
     private JTabbedPane tabs;   // Pestañas que contendrán las distintas vistas.
-    private JFrame ventana;     // Ventana Principal.
     private JPanel super_panel, // Panel que incorporará tanto los tabs como los box para seleccionar el idioma.
             contenedor_kwic, // Área donde incluir todos los elementos de la pestaña kwic.
             contenedor_ns;  // Área donde incluir todos los elementos de la pestaña ns.
@@ -50,25 +61,53 @@ public class VistaKWIC {
     private JLabel label_insertado, // Label para el checkBox cb_insertado.
             label_calculado,        // Label para el checkBox cb_calculado.
             label_ns;               // Label para el checkBox cb_ns.
+    
+    //  CONTROLADORES:
+    private MainControlador mainControlador;
+    private ControladorKWIC controladorKWIC;
+    private ControladorNS controladorNS;
 
     /**
-     * Constructor que creará los elementos de la vista y los montará en la
-     * vista:
+     * Constructor que inicializará las variables y creará los elementos de la vista
+     * y los montará en la misma:
      * @param lang lista de idiomas que debemos tener en cuenta en nuestra interfaz.
      */
-    public VistaKWIC(ArrayList<String> lang) {
-        this.creaCadenas();
+    public VistaKWIC() {
+        // Creamos los controladores:
+        this.mainControlador = new MainControlador(this);
+        this.controladorKWIC = new ControladorKWIC(this);
+        this.controladorNS = new ControladorNS(this);
+        
+        // Inicializamos los idiomas de la aplicación:
+        this.idiomas = this.mainControlador.getIdiomas();
+        inicializaCadenas();
+        
+        // Generamos la vista:
         this.montaVistaKWIC();
         this.montaVistaNS();
         this.montaTabs();
-        this.montaIdiomas(lang);
+        this.montaMenus();        
         this.abreVentana();
     }
     
-    private void creaCadenas() {
-        
+    /**
+     * Método para inicializar las cadenas de texto según con qué idioma queramos
+     * que se muestren:
+     */
+    private void inicializaCadenas(){
+        ResourceBundle rb = ResourceBundle.getBundle("idioma", this.mainControlador.getLocalizacion());
+        this.txtLabelInsertado = rb.getString("txtLabelInsertado");
+        this.txtLabelCalculado = rb.getString("txtLabelCalculado");
+        this.txtLabelNS = rb.getString("txtLabelNS");
+        this.txtBtnKWIC = rb.getString("txtBtnKWIC");
+        this.txtBtnNS = rb.getString("txtBtnNS");
+        this.txtDefectoKWIC = rb.getString("txtDefectoKWIC");
+        this.txtDefectoNS = rb.getString("txtDefectoNS");
+        this.txtLabKWIC = rb.getString("txtLabKWIC");
+        this.txtLabNS = rb.getString("txtLabNS");
+        this.tituloVentana = rb.getString("tituloVentana");
     }
-
+    
     /**
      * Método para crear los botones y el área que incluirá la botonera.
      */
@@ -93,7 +132,7 @@ public class VistaKWIC {
         this.contenedor_kwic.add(jsp1, gbc);
                 
         // Creamos el botón:
-        this.btn_kwic = new JButton(this.TXT_BTN_KWIC);
+        this.btn_kwic = new JButton(this.txtBtnKWIC);
         // Especificamos las restricciones:
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -108,11 +147,11 @@ public class VistaKWIC {
         
         // Creamos checkboxs y sus labels:
         this.ch_insertado = new JCheckBox();
-        this.label_insertado = new JLabel(this.TXT_LABEL_INSERTADO);
+        this.label_insertado = new JLabel(this.txtLabelInsertado);
         this.ch_calculado = new JCheckBox();
-        this.label_calculado = new JLabel(this.TXT_LABEL_CALCULADO);
+        this.label_calculado = new JLabel(this.txtLabelCalculado);
         this.ch_ns = new JCheckBox();
-        this.label_ns = new JLabel(this.TXT_LABEL_NS);
+        this.label_ns = new JLabel(this.txtLabelNS);
         // Los CheckBoxs y sus labels los vamos a introducir en un panel GridLayout:
         JPanel panel_check_boxs = new JPanel(new GridLayout(3,2));
         panel_check_boxs.add(this.label_insertado);
@@ -192,7 +231,7 @@ public class VistaKWIC {
         this.contenedor_ns.add(this.nueva_ns, gbc);
         
         // Creamos el botón para añadir nuevas palabras no significativas:
-        this.btn_insertar_ns = new JButton(this.TXT_BTN_INSERTAR_NS);
+        this.btn_insertar_ns = new JButton(this.txtBtnNS);
         // Especificamos las restricciones:
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -211,27 +250,50 @@ public class VistaKWIC {
      */
     private void montaTabs() {
         this.tabs = new JTabbedPane();
-        this.tabs.add(this.TXT_LAB_KWIC, this.contenedor_kwic);
-        this.tabs.add(this.TXT_LAB_NS, this.contenedor_ns);
+        this.tabs.add(this.txtLabKWIC, this.contenedor_kwic);
+        this.tabs.add(this.txtLabNS, this.contenedor_ns);
     }
     
     /**
      * Creamos un panel superior para los tabs y un panel inferior para seleccionar 
      * el idioma:
      */
-    private void montaIdiomas(ArrayList<String> languages) {
+    private void montaMenus() {   
+        // Para este metodo necesitamos conocer los idiomas que vamos a tener en la aplicación.
+        // Estos se buscan y crean en el controlador MainControlador. Por tanto, antes de nada,
+        // creamos dicho controlador:        
+        this.creaControladorMenus();
+        
         // Creamos el super panel que incluirá todo y las restricciones del mismo:
         this.super_panel = new JPanel (new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         
+        // Creamos el menú y le asignamos los campos:
+        this.menu = new JMenuBar();
+        this.menu.add(menuIdioma());
+        //Creamos las restricciones para el menú:
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.NONE;       // Para el escalado
+        gbc.insets = new Insets(0,0,0,0);   // Para los margenes
+        gbc.weightx = 0.0;    // % que se escala en x
+        gbc.weighty = 0.0;    // % que se escala en y
+        gbc.anchor = GridBagConstraints.LINE_START;
+        // Añadimos el combo al panel:
+        this.super_panel.add(this.menu, gbc);
+        
+        
         // Creamos el Combo para los idiomas:
-        this.idiomas = new JComboBox();
-        for (String idioma: languages){
-            this.idiomas.addItem(idioma);
+        this.comboIdiomas = new JComboBox();
+        // Añadimos los idiomas al comboBox
+        for (String idioma: idiomas){
+            this.comboIdiomas.addItem(idioma);
         }
         
         //Creamos las restricciones para el combo de idiomas:
-        gbc.gridx = 0;
+        gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
@@ -241,38 +303,68 @@ public class VistaKWIC {
         gbc.weighty = 0.0;    // % que se escala en y
         gbc.anchor = GridBagConstraints.LINE_END;
         // Añadimos el combo al panel:
-        this.super_panel.add(idiomas, gbc);
+        this.super_panel.add(comboIdiomas, gbc);
         
         //Creamos las restricciones para las pestañas:
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 1;
+        gbc.gridwidth = 2;
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.BOTH;       // Para el escalado
         gbc.insets = new Insets(10,10,10,10);   // Para los margenes
         gbc.weightx = 100.0;    // % que se escala en x
         gbc.weighty = 100.0;    // % que se escala en y
         // Insertamos las pestañas al panel:
-        this.super_panel.add(this.tabs, gbc);
-        
-        
+        this.super_panel.add(this.tabs, gbc);   
     }
 
+    /**
+     * Método para crear y añadir el controlador de los menús y : 
+     */
+    private void creaControladorMenus () {
+        Map<String,String> mapaAcciones = this.mainControlador.getMapaElementosAcciones();
+        
+        this.comboIdiomas.addActionListener(this.mainControlador);
+        this.comboIdiomas.setActionCommand(MainControlador.ELEMENTO_COMBO_IDIOMA);
+
+        for (Component item: this.menu.getComponents()){
+            JMenuItem mitem = (JMenuItem) item;
+            mitem.addActionListener(this.mainControlador);
+            mitem.setActionCommand(MainControlador.ELEMENTO_COMBO_IDIOMA);
+        }
+    }
+    
+    private JMenu menuIdioma(){
+        JMenu retorno = new JMenu();
+        for (String s: this.idiomas){
+            JMenuItem item = new JMenuItem(s);
+            retorno.add(item);
+        }
+        return retorno;
+    }
+    
     /**
      * Crea, configura y abre la ventana
      */
     private void abreVentana() {
-        // Creamos la ventana:
-        this.ventana = new JFrame();
         // Añadimos los elementos:
-        this.ventana.add(this.super_panel);
+        this.add(this.super_panel);
         // Configura la ventana:
-        this.ventana.setTitle("GUI de KWIC");
-        this.ventana.pack();
+        this.setTitle(this.tituloVentana);
+        this.pack();
         // Abre la ventana:
-        this.ventana.setVisible(true);
+        this.setVisible(true);
         // Configura la salida de la ventana y de la aplicación:
-        this.ventana.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+    
+    /**
+     * Método que define cómo se va a hacer el repaint de la ventana.
+     */
+    @Override
+    public void repaint(){
+        inicializaCadenas();
+        super.repaint();
     }
 
 }
