@@ -3,6 +3,7 @@
  */
 package kwicDriver;
 
+import java.text.DateFormat;
 import vistas.VistaKWIC;
 import java.util.ArrayList;
 import java.util.Locale;
