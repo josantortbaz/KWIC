@@ -93,8 +93,8 @@ public class VistaKWIC extends JFrame {
         this.txtLabelNS = "No significativas"; //this.mainControlador.getTextDeElemento("txtLabelNS");
         this.txtBtnKWIC = "KWIC"; //this.mainControlador.getTextDeElemento("txtBtnKWIC");
         this.txtBtnNS = "Insertar"; //this.mainControlador.getTextDeElemento("txtBtnNS");
-        this.txtDefectoKWIC = "Insertar"; //this.mainControlador.getTextDeElemento("txtDefectoKWIC");
-        this.txtDefectoNS = "Insertar"; //this.mainControlador.getTextDeElemento("txtDefectoNS");
+        this.txtDefectoKWIC = "Inserte títulos de películas"; //this.mainControlador.getTextDeElemento("txtDefectoKWIC");
+        this.txtDefectoNS = "Inserte palabras no significativas"; //this.mainControlador.getTextDeElemento("txtDefectoNS");
         this.txtLabKWIC = "KWIC"; //this.mainControlador.getTextDeElemento("txtLabKWIC");
         this.txtLabNS = "No significativas"; //this.mainControlador.getTextDeElemento("txtLabNS");
         this.tituloVentana = "GUI de KWIC"; //this.mainControlador.getTextDeElemento("tituloVentana");
@@ -109,7 +109,8 @@ public class VistaKWIC extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         
         // Creamos el área de textoKWIC donde introduciremos los títulos:
-        this.texto_kwic = new JTextArea(this.txtDefectoKWIC);
+        this.texto_kwic = new JTextArea();
+        this.texto_kwic.setToolTipText(this.txtDefectoKWIC);
         JScrollPane jsp1 = new JScrollPane(this.texto_kwic);
         // Especificamos las restricciones:
         gbc.gridx = 0;
@@ -180,9 +181,37 @@ public class VistaKWIC extends JFrame {
         gbc.weightx = 100.0;    // % que se escala en x
         gbc.weighty = 100.0;    // % que se escala en y    
         // Añadimos los componentes al contenedor:
-        this.contenedor_kwic.add(jsp2,gbc);        
+        this.contenedor_kwic.add(jsp2,gbc);   
+        
+        // Añadimos el controlador para gestionar los eventos de la pestaña.
+        creaControladorKWIC();
+    }
+    
+    /** 
+     * Método para añadir el controlador a la pestaña de KWIC:
+     */
+    private void creaControladorKWIC (){
+        this.btn_kwic.addActionListener(this.controladorKWIC);
+        this.btn_kwic.setActionCommand(ControladorKWIC.ACCION_BOTON_CALCULAR_KWIC);
+    }
+    
+    /**
+     * Método que retorna los títulos que hemos insertado en el campo de títulos.
+     * @return títulos insertados.
+     */
+    public String getTitulos () {
+        return this.texto_kwic.getText();
     }
 
+    /**
+     * Método que inserta el resultado del diccionario de títulos kwic en el campo
+     * habilitado para ello.
+     * @param kwic diccionario de títulos kwic resultante.
+     */
+    public void setKWIC (String kwic){
+        this.campo_kwic.setText(kwic);
+    }
+    
     /**
      * Método para crear el área donde introducir el textoKWIC cargado y
      * calculado.
@@ -193,7 +222,7 @@ public class VistaKWIC extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         
         // Creamos el campo de texto donde se añadirán las palabras no significativas:
-        this.campo_ns = new JTextArea(this.txtDefectoNS);
+        this.campo_ns = new JTextArea();
         this.campo_ns.setEnabled(false);
         JScrollPane panelScroll = new JScrollPane(this.campo_ns);
         // Especificamos las restricciones:
@@ -210,6 +239,7 @@ public class VistaKWIC extends JFrame {
                
         // Creamos el campo para añadir nuevas palabras no significativas:
         this.nueva_ns = new JTextField();
+        this.nueva_ns.setToolTipText(this.txtDefectoNS);
         // Especificamos las restricciones:
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -235,6 +265,8 @@ public class VistaKWIC extends JFrame {
         gbc.weighty = 0.0;    // % que se escala en y        
         // Añadimos el botón al panel:
         this.contenedor_ns.add(this.btn_insertar_ns, gbc);
+        
+        // Isertamos el controlador de la pestaña:
         creaControladorNS();
     }
     

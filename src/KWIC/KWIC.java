@@ -97,6 +97,16 @@ public class KWIC {
     public void setDiccionario(Map<TituloKWIC, Set<String>> diccionario) {
         this.diccionario = diccionario;
     }
+    
+    /**
+     * Método para modificar las películas iniciales.
+     * @param titulos títulos de películas para calcular el kwic
+     */
+    public void setPeliculas(String titulos){
+        this.diccionario =
+                new TreeMap<TituloKWIC, Set<String>>(generarDiccionario(titulos));
+    }
+    
     /**
      * Método para generar las palabras no significativas a partir de una cadena.
      * @param noSignificativas cadena con las palabras no significativas.
