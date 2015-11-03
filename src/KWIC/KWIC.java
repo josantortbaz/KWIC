@@ -27,12 +27,9 @@ public class KWIC {
     }
     
     public KWIC (String titulos, String noSignificativas) {
-        // Creamos la estructura llamando al constructor sin parámetros:
-        this();
         // Creamos el conjunto de palabras no significativas:
         this.noSignificativas = new TreeSet<TituloKWIC> ();
-        for (String s: dividirCadena(noSignificativas, this.SEPARADORES_NS))
-            this.noSignificativas.add(new TituloKWIC(s));
+        this.generarNoSignificativas(noSignificativas);
         
         // Creamos el diccionario con los títulos y las palabras significativas:
         this.diccionario =
@@ -62,6 +59,13 @@ public class KWIC {
     public Set<TituloKWIC> getNoSignificativas() {
         return noSignificativas;
     }
+    
+    public String getNoSignificativasString(){
+        String retorno = "";
+        for(TituloKWIC tk: this.noSignificativas)
+            retorno += tk.toString() + "\n";
+        return retorno;
+    }
 
     /**
      * Devuelve el diccionario donde las claves son las palabras significativas y 
@@ -81,6 +85,10 @@ public class KWIC {
     public void setNoSignificativas(TreeSet<TituloKWIC> noSignificativas) {
         this.noSignificativas = noSignificativas;
     }
+    
+    public void setNoSignificativas(String noSignificativas){
+        this.generarNoSignificativas(noSignificativas);
+    }
 
     /**
      * Modifica el diccionario de películas.
@@ -88,6 +96,14 @@ public class KWIC {
      */
     public void setDiccionario(Map<TituloKWIC, Set<String>> diccionario) {
         this.diccionario = diccionario;
+    }
+    /**
+     * Método para generar las palabras no significativas a partir de una cadena.
+     * @param noSignificativas cadena con las palabras no significativas.
+     */
+    private void generarNoSignificativas(String noSignificativas) {
+        for (String s: dividirCadena(noSignificativas, this.SEPARADORES_NS))
+            this.noSignificativas.add(new TituloKWIC(s));
     }
     
     /**

@@ -15,7 +15,7 @@ import vistas.VistaKWIC;
  * @version 0.1
  * @author jortizbazaga
  */
-public class MainControlador implements ActionListener {
+public class ControladorIdiomas implements ActionListener {
 
     public static final String ACCION_COMBO_IDIOMA = "accionComboIdioma";
 
@@ -26,7 +26,7 @@ public class MainControlador implements ActionListener {
      * Constructor que creará la ventana y le pasará los idiomas que se van a
      * controlar.
      */
-    public MainControlador(VistaKWIC vista) {
+    public ControladorIdiomas(VistaKWIC vista) {
         this.localizacion = Locale.getDefault();
         this.vista = vista;
     }

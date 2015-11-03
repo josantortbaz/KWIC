@@ -4,14 +4,10 @@
 package vistas;
 
 import controladores.ControladorKWIC;
-import controladores.ControladorNS;
-import controladores.MainControlador;
+import controladores.ControladorIdiomas;
 import java.awt.*;
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
 
 /**
  *
@@ -62,9 +58,8 @@ public class VistaKWIC extends JFrame {
             label_ns;               // Label para el checkBox cb_ns.
     
     //  CONTROLADORES:
-    private MainControlador mainControlador;
+    private ControladorIdiomas controladorIdiomas;
     private ControladorKWIC controladorKWIC;
-    private ControladorNS controladorNS;
 
     /**
      * Constructor que inicializará las variables y creará los elementos de la vista
@@ -73,12 +68,11 @@ public class VistaKWIC extends JFrame {
      */
     public VistaKWIC() {
         // Creamos los controladores:
-        this.mainControlador = new MainControlador(this);
+        this.controladorIdiomas = new ControladorIdiomas(this);
         this.controladorKWIC = new ControladorKWIC(this);
-        this.controladorNS = new ControladorNS(this);
         
         // Inicializamos los idiomas de la aplicación:
-        this.idiomas = this.mainControlador.getIdiomas();
+        this.idiomas = this.controladorIdiomas.getIdiomas();
         inicializaCadenas();
         
         // Inciamos los elementos:
@@ -115,7 +109,7 @@ public class VistaKWIC extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         
         // Creamos el área de textoKWIC donde introduciremos los títulos:
-        this.texto_kwic = new JTextArea();
+        this.texto_kwic = new JTextArea(this.txtDefectoKWIC);
         JScrollPane jsp1 = new JScrollPane(this.texto_kwic);
         // Especificamos las restricciones:
         gbc.gridx = 0;
@@ -199,7 +193,7 @@ public class VistaKWIC extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         
         // Creamos el campo de texto donde se añadirán las palabras no significativas:
-        this.campo_ns = new JTextArea();
+        this.campo_ns = new JTextArea(this.txtDefectoNS);
         this.campo_ns.setEnabled(false);
         JScrollPane panelScroll = new JScrollPane(this.campo_ns);
         // Especificamos las restricciones:
@@ -241,6 +235,30 @@ public class VistaKWIC extends JFrame {
         gbc.weighty = 0.0;    // % que se escala en y        
         // Añadimos el botón al panel:
         this.contenedor_ns.add(this.btn_insertar_ns, gbc);
+        creaControladorNS();
+    }
+    
+    /**
+     * Método para configurar el controlador de la pestaña de palabras no Significativas. 
+     */
+    private void creaControladorNS(){
+        this.btn_insertar_ns.addActionListener(this.controladorKWIC);
+        this.btn_insertar_ns.setActionCommand(ControladorKWIC.ACCION_BOTON_INSERTAR_NS);
+    }
+    
+    /** 
+     * Método que devuelve el contenido añadido en el campo para introducir palabras no
+     * Significativas.
+     * @return palabras no significativas insertadas.
+     */
+    public String getPalabraNS () {
+        String retorno = this.nueva_ns.getText();
+        this.nueva_ns.setText("");
+        return retorno;
+    }
+    
+    public void setPalabrasNS(String s) {
+        this.campo_ns.setText(s);
     }
 
     /**
@@ -300,8 +318,8 @@ public class VistaKWIC extends JFrame {
      * Método para crear y añadir el controlador del combo de idiomas : 
      */
     private void creaControladorMenus () {        
-        this.comboIdiomas.addActionListener(this.mainControlador);
-        this.comboIdiomas.setActionCommand(MainControlador.ACCION_COMBO_IDIOMA);
+        this.comboIdiomas.addActionListener(this.controladorIdiomas);
+        this.comboIdiomas.setActionCommand(ControladorIdiomas.ACCION_COMBO_IDIOMA);
     }
     
     /**
