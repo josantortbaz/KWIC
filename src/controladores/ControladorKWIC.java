@@ -65,7 +65,6 @@ public class ControladorKWIC implements ActionListener {
         String titulos = this.vista.getTitulos();
         this.kwic.setPeliculas(titulos);
         String resultado = this.kwic.toString();    
-        System.out.println(resultado);
         this.vista.setKWIC(resultado);
     }
 
